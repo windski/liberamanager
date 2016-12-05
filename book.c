@@ -9,9 +9,11 @@ booktype *creatdata(int flag, booktype *head){
         booktype *head = (booktype *)malloc(sizeof(booktype));
         booktype *rear = head;
         while(x != 0){
-            scanf("请输入书的序列号:%lu" &x); 
+            scanf("请输入书的序列号:%lu", &x); 
+            putchar('\n');
             booktype *s = (booktype *)malloc(sizeof(booktype));
             s->index = x;
+            s->flag = 1;
             printf("请输入书的名字\n");
             fgets(s->name, MAXNAME, stdin);
             printf("请输入书的作者\n");
@@ -26,9 +28,11 @@ booktype *creatdata(int flag, booktype *head){
         return head;
     }else{
         unsigned long x;
-        scanf("请输入书的序列号:%lu" &x); 
+        scanf("请输入书的序列号:%lu", &x); 
+        putchar('\n');
         booktype *s = (booktype *)malloc(sizeof(booktype));
         s->index = x;
+        s->flag = 1;
         printf("请输入书的名字\n");
         fgets(s->name, MAXNAME, stdin);
         printf("请输入书的作者\n");
@@ -68,7 +72,7 @@ void searchbook(booktype *head, char *bookname){
 int loadbook(booktype *head, char *bookname){
     booktype *h = head->next;
     while(h->next){
-        if(strcmp(h->name, bookname == 0 && h->flag == 1)){
+        if(strcmp(h->name, bookname) == 0 && h->flag == 1){
             h->flag = 0;  //借出此书时将flag修改为0,表示借出
             return 0;   //借出成功返回0
         }
@@ -89,10 +93,10 @@ int repay(booktype *head, char *bookname){
     return -1;
 }
 
-booktype *deletbook(booktype *head, char *bookname, unsigned long i){
+int deletbook(booktype *head, char *bookname, unsigned long i){
     booktype *h = head->next;
     while(h->next){
-        if(h->index == i && strcmp(h-name, bookname) == 0){
+        if(h->index == i && strcmp(h->name, bookname) == 0){
             h->prior->next = h->next;
             h->next->prior = h->prior;
             free(h);
@@ -100,5 +104,5 @@ booktype *deletbook(booktype *head, char *bookname, unsigned long i){
         }
         h = h->next;
     }
-    return -1;
+    return 1;
 }

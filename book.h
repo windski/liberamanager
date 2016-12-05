@@ -15,12 +15,12 @@ typedef struct booktype{
     struct booktype *next;
     char name[MAXNAME];    //图书的书名
     char author[MAXNAME];    //图书的作者
-    int flag = 1;     //图书被借出时,flag = 0
+    int flag;     //图书被借出时,flag = 0
     char description[MAXLEN];  //此书的描述
 }booktype;
 
-booktype *deletbook(booktype *, char *, unsigned long);   //去除已经废弃不用的书
-booktype *creatdata(void);    //初始化时录入图书数据,而且肩负新增图书的任务
+int deletbook(booktype *, char *, unsigned long);   //去除已经废弃不用的书
+booktype *creatdata(int , booktype *);    //初始化时录入图书数据,而且肩负新增图书的任务
 int addnewbook(booktype *);    //新增图书
 void searchbook(booktype *, char *);    //检索图书
 int loadbook(booktype *, char *);    //借出图书
