@@ -106,3 +106,8 @@ int deletbook(booktype *head, char *bookname, unsigned long i){
     }
     return 1;
 }
+
+
+//booktype *restrge(FILE *){
+//    /*code here*/
+//}
