@@ -24,6 +24,5 @@ booktype *creatdata(int , booktype *);    //初始化时录入图书数据,而�
 void searchbook(booktype *, char *);    //检索图书
 int loadbook(booktype *, char *);    //借出图书
 int repay(booktype *, char *);    //还书
-booktype *restrge(FILE *);  //从文件中读取之前存下的图书的信息
 
 #endif
