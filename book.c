@@ -9,7 +9,7 @@ booktype *creatdata(int flag, booktype *head){
         booktype *head = (booktype *)malloc(sizeof(booktype));
         booktype *rear = head;
         while(x != 0){
-            scanf("请输入书的序列号:%lu", &x); 
+            scanf("请输入书的序列号:%lu", &x);
             putchar('\n');
             booktype *s = (booktype *)malloc(sizeof(booktype));
             s->index = x;
@@ -28,7 +28,7 @@ booktype *creatdata(int flag, booktype *head){
         return head;
     }else{
         unsigned long x;
-        scanf("请输入书的序列号:%lu", &x); 
+        scanf("请输入书的序列号:%lu", &x);
         putchar('\n');
         booktype *s = (booktype *)malloc(sizeof(booktype));
         s->index = x;
@@ -74,10 +74,12 @@ int loadbook(booktype *head, char *bookname){
     while(h->next){
         if(strcmp(h->name, bookname) == 0 && h->flag == 1){
             h->flag = 0;  //借出此书时将flag修改为0,表示借出
+            printf("SUCCESS!\n");
             return 0;   //借出成功返回0
         }
         h = h->next;
     }
+    printf("ERROR!\n");
     return -1;   //没有此书或借出失败
 }
 
@@ -86,10 +88,12 @@ int repay(booktype *head, char *bookname){
     while(h->next){
         if(strcmp(h->name, bookname) == 0  && h->flag != 1){
             h->flag = 1;
+            printf("SUCCESS!\n");
             return 0;
         }
         h = h->next;
     }
+    printf("ERROR!\n");
     return -1;
 }
 

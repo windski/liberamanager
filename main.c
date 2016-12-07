@@ -2,10 +2,11 @@
 #include <stdlib.h>
 #include <string.h>
 #include "book.h"
+#include "unistd.h"
 
-int main(int argc, const char **argv)
+int main(int argc, const char *argv[])
 {
-    int i = 1;
+    int i = 1, ch;
     booktype *bookdata;
     FILE *fp;
     fp = fopen("bookdata.mem", "r");
@@ -18,22 +19,23 @@ int main(int argc, const char **argv)
         fp = fopen("bookdata.mem", "a");
         fseek(fp, 0, SEEK_SET);
         /*读取文件流*/
-        bookdata = restrge(fp);
-        for(; i<=argc; i++){
-            if(strcmp("-a", argv[i]) == 0){
-                bookdata = creatdata(0, bookdata);
-            }else if(strcmp("-d", argv[i]) == 0){
-                deletbook(bookdata, argv[i+1], argv[i+2]);
-            }else if(strcmp("-s", argv[i]) == 0){
-                searchbook(bookdata, argv[i+1]);
-            }else if(strcmp("-r", argv[i]) == 0){
-                repay(bookdata, argv[i+1]);
-            }else if(strcmp("-b", argv[i]) == 0){
-                loadbook(bookdata, argv[i+1]);
-            }else{
-                printf("用法: libmanager [选项] 命令\n\n      -a <新增图书的名字>\n      -d <删除已经废弃不用的书 它的序列号>\n      -s <搜索图书的信息的书名>\n      -b <借书的书名>\n      -r <还书的名字>\n\n");
+        //bookdata = restrge(fp);
+        while((ch = getopt(argc, argv, "ab:r:d:s:")) != -1){
+            switch(ch){
+                case 'a':bookdata = creatdata(0, bookdata);
+                    break;
+                case 'b':loadbook(bookdata, optarg);
+                    break;
+                case 'r':repay(bookdata, optarg);
+                    break;
+                case 'd':deletbook(bookdata, optarg, (unsigned long)atol(argv[optind]));
+                    break;
+                case 's':searchbook(bookdata, optarg);
+                    break;
+                default:printf("用法: libmanager [选项] 命令\n\n      -a 用来新增图书.\n      -d <删除已经废弃不用的书 它的序列号>\n      -s <搜索图书的信息的书名>\n      -b <借书的书名>\n      -r <还书的名字>\n\n");
             }
         }
+
     }
     return 0;
 }
