@@ -52,7 +52,10 @@ booktype *creatdata(int flag, booktype *head){
     }
 }
 
-void searchbook(booktype *head, char *bookname){
+void searchbook(booktype *head){
+    char bookname[MAXNAME];
+    printf("请输入你要搜索的书名:");
+    fgets(bookname, MAXNAME, stdin);
     booktype *h = head->next;
     char bookauthor[MAXNAME];
     char bookdescrip[MAXLEN];
@@ -74,12 +77,16 @@ void searchbook(booktype *head, char *bookname){
 }
 
 
-int loadbook(booktype *head, char *bookname){
+int loadbook(booktype *head){
+    char bookname[MAXNAME];
+    printf("请输入你要借书的书名:");
+    fgets(bookname, MAXNAME, stdin);
     booktype *h = head->next;
     while(h->next){
         if(strcmp(h->name, bookname) == 0 && h->flag == 1){
             h->flag = 0;  //借出此书时将flag修改为0,表示借出
             printf("SUCCESS!\n");
+            printf("你所借的书的序列号为:%lu, 还书时请提供...\n", h->index);
             return 0;   //借出成功返回0
         }
         h = h->next;
@@ -88,10 +95,16 @@ int loadbook(booktype *head, char *bookname){
     return -1;   //没有此书或借出失败
 }
 
-int repay(booktype *head, char *bookname){
+int repay(booktype *head){
+    unsigned long i;
+    char bookname[MAXNAME];
+    printf("请输入你要借书的书名:");
+    fgets(bookname, MAXNAME, stdin);
+    printf("请提供你要还书的序列号:");
+    scanf("%lu", &i);
     booktype *h = head->next;
     while(h->next){
-        if(strcmp(h->name, bookname) == 0  && h->flag != 1){
+        if(strcmp(h->name, bookname) == 0  && h->flag == i){
             h->flag = 1;
             printf("SUCCESS!\n");
             return 0;
@@ -102,7 +115,13 @@ int repay(booktype *head, char *bookname){
     return -1;
 }
 
-int deletbook(booktype *head, char *bookname, unsigned long i){
+int deletbook(booktype *head){
+    char bookname[MAXNAME];
+    unsigned long i;
+    printf("请输入你要删除的书名:");
+    fgets(bookname, MAXNAME, stdin);
+    printf("请输入你要删除书的序列号:");
+    scanf("%lu", &i);
     booktype *h = head->next;
     while(h->next){
         if(h->index == i && strcmp(h->name, bookname) == 0){
@@ -113,7 +132,6 @@ int deletbook(booktype *head, char *bookname, unsigned long i){
         }
         h = h->next;
     }
-    return 1;
+    return -1;
 }
-
 

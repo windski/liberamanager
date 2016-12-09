@@ -12,8 +12,8 @@ booktype *readdata(void);   //从文件中读取数据到链表
 void rewritedata(booktype *);  //将整个bookdata.dat重新写一遍
 
 int main(int argc, char *argv[]){
-    int i = 1, ch;
-    booktype *bookdata;
+    int ch;
+    booktype *bookdata = (booktype *)malloc(sizeof(booktype));
     FILE *fp;
     fp = fopen("flag.dat", "r");
     if(fp == NULL){

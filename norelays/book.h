@@ -19,10 +19,10 @@ typedef struct booktype{
     char description[MAXLEN];  //此书的描述
 }booktype;
 
-int deletbook(booktype *, char *, unsigned long);   //去除已经废弃不用的书
+int deletbook(booktype *);   //去除已经废弃不用的书
 booktype *creatdata(int , booktype *);    //初始化时录入图书数据,而且肩负新增图书的任务
-void searchbook(booktype *, char *);    //检索图书
-int loadbook(booktype *, char *);    //借出图书
-int repay(booktype *, char *);    //还书
+void searchbook(booktype *);    //检索图书
+int loadbook(booktype *);    //借出图书
+int repay(booktype *);    //还书
 
 #endif
