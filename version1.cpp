@@ -22,7 +22,7 @@ int main(int argc, char *argv[]){
         openfile.close();   //立个flag
         printf("用法: libmanager [选项] 命令\n\n      -a 用来新增图书.\n      -d <删除已经废弃不用的书 它的序列号>\n      -s <搜索图书的信息的书名>\n      -b <借书的书名>\n      -r <还书的名字>\n\n");
         printf("Welcome to use it....\n\n第一次使用请先录入图书的数据信息\n");
-        bookdata = creatdata(1, NULL);
+        bookdata = creatdata(1, bookdata);
         /*给文件写入图书的数据*/
         savedata(bookdata);
     }else{
