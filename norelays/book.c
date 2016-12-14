@@ -9,7 +9,8 @@ booktype *creatdata(int flag, booktype *head){
         unsigned long x;
         booktype *head = (booktype *)malloc(sizeof(booktype));
         booktype *rear = head;
-        printf("请输入书的序列号:");
+        rear->next = NULL;
+        printf("请输入书的序列号(序号为0时结束):");
         scanf("%lu", &x);
         while(x != 0){
             booktype *s = (booktype *)malloc(sizeof(booktype));
@@ -24,11 +25,11 @@ booktype *creatdata(int flag, booktype *head){
             fgets(s->description, MAXLEN, stdin);
             s->prior = rear;
             s->next = rear->next;
+            rear->next = s;
             rear = s;
             printf("请输入书的序列号:");
             scanf("%lu", &x);
         }
-        rear->next = NULL;
         return head;
     }else{
         unsigned long x;
@@ -60,7 +61,7 @@ void searchbook(booktype *head){
     char bookauthor[MAXNAME];
     char bookdescrip[MAXLEN];
     int ablebook = 0, stroge = 0;
-    while(h->next == NULL){
+    while(h){
         if(strcmp(h->name, bookname) == 0){
             stroge++;
             strcpy(bookauthor, h->author);
@@ -82,7 +83,7 @@ int loadbook(booktype *head){
     printf("请输入你要借书的书名:");
     fgets(bookname, MAXNAME, stdin);
     booktype *h = head->next;
-    while(h->next){
+    while(h){
         if(strcmp(h->name, bookname) == 0 && h->flag == 1){
             h->flag = 0;  //借出此书时将flag修改为0,表示借出
             printf("SUCCESS!\n");
@@ -98,16 +99,20 @@ int loadbook(booktype *head){
 int repay(booktype *head){
     unsigned long i;
     char bookname[MAXNAME];
-    printf("请输入你要借书的书名:");
+    printf("请输入你要还书的书名:");
     fgets(bookname, MAXNAME, stdin);
     printf("请提供你要还书的序列号:");
     scanf("%lu", &i);
     booktype *h = head->next;
-    while(h->next){
-        if(strcmp(h->name, bookname) == 0  && h->flag == i){
-            h->flag = 1;
-            printf("SUCCESS!\n");
-            return 0;
+    while(h){
+        if(strcmp(h->name, bookname) == 0  && h->index == i){
+            if(h->flag != 1){
+                h->flag = 1;
+                printf("SUCCESS!\n");
+                return 0;
+            }else{
+                printf("ERROR!\n\n此书未被借出,还书失败\n");
+            }
         }
         h = h->next;
     }
@@ -123,7 +128,7 @@ int deletbook(booktype *head){
     printf("请输入你要删除书的序列号:");
     scanf("%lu", &i);
     booktype *h = head->next;
-    while(h->next){
+    while(h){
         if(h->index == i && strcmp(h->name, bookname) == 0){
             h->prior->next = h->next;
             h->next->prior = h->prior;
