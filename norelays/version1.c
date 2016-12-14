@@ -14,11 +14,7 @@ int main(void){
     while(1){
         printf("(libmanager)");
         scanf("%s", str);
-        if(strcmp(&str[0], "\0") == 0){
-            continue;
-        }else{
-            while((ch=getchar())!='\n' && ch!=EOF);
-        }
+        while((ch=getchar())!='\n' && ch!=EOF);
         if(strcmp(str, "a") == 0){
             bookdata = creatdata(0, bookdata);
         }else if(strcmp(str, "d") == 0){
