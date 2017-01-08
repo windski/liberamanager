@@ -1,7 +1,7 @@
+#include"book.h"
 #include<stdio.h>
 #include<stdlib.h>
 #include<string.h>
-#include"book.h"
 
 booktype *creatdata(int flag, booktype *head){
     char ch;
@@ -23,9 +23,9 @@ booktype *creatdata(int flag, booktype *head){
             fgets(s->author, MAXNAME, stdin);
             printf("请输入此书的描述性文字\n");
             fgets(s->description, MAXLEN, stdin);
+            s->prior = rear;
             s->next = rear->next;
             rear->next = s;
-            s->prior = rear;
             rear = s;
             printf("请输入书的序列号:");
             scanf("%lu", &x);

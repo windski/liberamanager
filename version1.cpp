@@ -54,10 +54,17 @@ void savedata(booktype *head){
     booktype *p = head->next;
     ofstream openfile("bookdata.dat", ios::out);
     while(p == NULL){
-        openfile << p->index << endl;
-        openfile << p->name << endl;
-        openfile << p->author << endl;
-        openfile << p->description << endl;
+        unsigned long temp_num = p->index;
+        char temp_name[MAXNAME];
+        strcpy(temp_name, p->name);
+        char temp_author[MAXNAME];
+        strcpy(temp_author, p->author);
+        char temp_des[MAXNAME];
+        strcpy(temp_des, p->description);
+        openfile << temp_num << endl;
+        openfile << temp_name << endl;
+        openfile << temp_author << endl;
+        openfile << temp_des << endl;
         p = p->next;
     }
     openfile.close();
