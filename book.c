@@ -9,7 +9,8 @@ booktype *creatdata(int flag, booktype *head){
         unsigned long x;
         booktype *head = (booktype *)malloc(sizeof(booktype));
         booktype *rear = head;
-        printf("请输入书的序列号:");
+        rear->next = NULL;
+        printf("请输入书的序列号(输入0结束):");
         scanf("%lu", &x);
         while(x != 0){
             booktype *s = (booktype *)malloc(sizeof(booktype));
@@ -22,13 +23,13 @@ booktype *creatdata(int flag, booktype *head){
             fgets(s->author, MAXNAME, stdin);
             printf("请输入此书的描述性文字\n");
             fgets(s->description, MAXLEN, stdin);
-            s->prior = rear;
             s->next = rear->next;
+            rear->next = s;
+            s->prior = rear;
             rear = s;
             printf("请输入书的序列号:");
             scanf("%lu", &x);
         }
-        rear->next = NULL;
         return head;
     }else{
         unsigned long x;

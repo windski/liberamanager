@@ -13,7 +13,7 @@ void rewritedata(booktype *);  //将整个bookdata.dat重新写一遍
 
 int main(int argc, char *argv[]){
     int ch;
-    booktype *bookdata = (booktype *)malloc(sizeof(booktype));
+    booktype *bookdata;
     FILE *fp;
     fp = fopen("flag.dat", "r");
     if(fp == NULL){
@@ -52,7 +52,7 @@ int main(int argc, char *argv[]){
 
 void savedata(booktype *head){
     booktype *p = head->next;
-    ofstream openfile("bookdata.dat");
+    ofstream openfile("bookdata.dat", ios::out);
     while(p == NULL){
         openfile << p->index << endl;
         openfile << p->name << endl;
