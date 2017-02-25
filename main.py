@@ -86,9 +86,10 @@ class Main:
 
 class Sql:
     sql_init = 'CREATE TABLE book (id INTEGER NOT NULL, bookname VARCHAR(100) NOT NULL, author VARCHAR(50) NOT NULL, ' \
-               'description TEXT, flag TINYINT NOT NULL, PRIMARY KEY(id));'
-    sql_insert = 'INSERT INTO book (id, bookname, author, description, flag) VALUES(%s, %s, %s, %s, %s)'
+               'description TEXT, flag TINYINT NOT NULL, PRIMARY KEY(id))character set utf8mb4;'
+    sql_insert = 'INSERT INTO book (id, bookname, author, description, flag) VALUES({}, "{}", "{}", "{}", {})'
     sql_update = 'UPDATE book SET {} = {} WHERE id = {}'
+    sql_search = 'SELECT * FROM book WHERE bookname = "{}"'
 
     def __init__(self):
         try:
@@ -109,7 +110,9 @@ class Sql:
         pass
 
     def search(self, name):
-        pass
+        with self.connect.cursor() as cu:
+            cu.execute(self.sql_search.format(name))
+
 
     def adddata(self, index, name, author, description):
         pass
