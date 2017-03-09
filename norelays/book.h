@@ -19,6 +19,14 @@ typedef struct booktype{
     char description[MAXLEN];  //此书的描述
 }booktype;
 
+typedef struct{
+    unsigned long i;
+    char name[MAXNAME];
+    char author[MAXNAME];
+    int f;
+    char des[MAXLEN];
+}mem;
+
 int deletbook(booktype *);   //去除已经废弃不用的书
 booktype *creatdata(int , booktype *);    //初始化时录入图书数据,而且肩负新增图书的任务
 void searchbook(booktype *);    //检索图书
