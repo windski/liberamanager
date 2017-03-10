@@ -50,11 +50,8 @@ booktype *addbook(booktype *head, unsigned long x, char *name, char *author, cha
 }
 
 
-void searchbook(booktype *head, char *bookname){
+void searchbook(booktype *head, char *bookname, char *bookauthor, char *bookdescrip, int *ablebook, int *stroge){
     booktype *h = head->next;
-    char bookauthor[MAXNAME];
-    char bookdescrip[MAXLEN];
-    int ablebook = 0, stroge = 0;
     while(h){
         if(strcmp(h->name, bookname) == 0){
             stroge++;
@@ -65,43 +62,35 @@ void searchbook(booktype *head, char *bookname){
         }
         h = h->next;
     }
-    printf("此书的作者是:");
-    puts(bookauthor);
-    puts(bookdescrip);
-    printf("此书共有%d本,其中%d可以借阅\n", stroge, ablebook);
 }
 
 
-int loadbook(booktype *head, char *bookname){
+int loadbook(booktype *head, char *bookname, int *i){
     booktype *h = head->next;
     while(h){
         if(strcmp(h->name, bookname) == 0 && h->flag == 1){
             h->flag = 0;  //借出此书时将flag修改为0,表示借出
-            printf("SUCCESS!\n");
-            printf("你所借的书的序列号为:%lu, 还书时请提供...\n", h->index);
+            *i = h->index;
             return 0;   //借出成功返回0
         }
         h = h->next;
     }
-    printf("ERROR!\n");
     return -1;   //没有此书或借出失败
 }
 
-int repay(booktype *head, unsigned long i, char *bookname){
+int repay(booktype *head, unsigned long i, char *bookname{
     booktype *h = head->next;
     while(h){
         if(strcmp(h->name, bookname) == 0  && h->index == i){
             if(h->flag != 1){
                 h->flag = 1;
-                printf("SUCCESS!\n");
                 return 0;
             }else{
-                printf("ERROR!\n\n此书未被借出,还书失败\n");
+                return -1;
             }
         }
         h = h->next;
     }
-    printf("ERROR!\n");
     return -1;
 }
 

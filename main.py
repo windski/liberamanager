@@ -1,7 +1,5 @@
 #!/usr/bin/env python3
 import pymysql
-import ctypes
-import threading
 import getopt
 import sys
 
@@ -15,74 +13,87 @@ config = dict(
 )
 
 
-class Book(ctypes.Structure):
-    pass
-
-
 class Main:
     help = '   -a 新增图书\n   -d 删除已经废弃不用的图书\n   -s 搜索图书的信息\n   -b 借书\n   -r 还书\n\n'
 
     def __init__(self):
-        try:
-            self.so = ctypes.cdll.LoadLibrary('libbook.so')
-        except OSError as e:
-            print(e)
-        self.so.deletbook.restype = ctypes.c_int
-        self.so.creatdata.restype = ctypes.POINTER(Book)
-        self.so.loadbook.restype = ctypes.c_int
-        self.so.repay.restype = ctypes.c_int
         print(self.help)
         self.sql = Sql()
-        self.bo = self.so.creatdate(None)
+        try:
+            self.sql.adddata(1, 'ifininit', 'ifitinit', 'ifitinit')
+            print('建立数据..序列为0时结束..')
+            while True:
+                index = input('序列:')
+                name = input('名字:')
+                author = input('作者')
+                des = input('描述')
+                if index == 0:
+                    break
+                self.sql.adddata(index, name, author, des)
+        except pymysql.err.OperationalError:
+            pass
 
     def main(self):
         opts, args = getopt.getopt(sys.argv[1:], 'ha:d:s:b:r:')
+        if opts is None or args is None:
+            while True:
+                print(self.help.join("q 退出\n"))
+                i = input("(liberamanager)")
+                if i is 'q' or i is 'quit':
+                    break
+                elif i is 'a':
+                    self.__add()
+                elif i is 'd':
+                    self.__dele()
+                elif i is 's':
+                    self.__search()
+                elif i is 'b':
+                    self.__bow()
+                elif i is 'r':
+                    self.__replt()
         for op, values in opts:
             if op == '-h':
                 print(self.help)
                 break
-
             elif op == '-a':
-                index = input('序列号:')
-                name = input('书名:')
-                author = input('作者:')
-                description = input('描述:')
-                if self.bo is not None:
-                    self.bo = self.so.addbook(self.bo, ctypes.c_ulong(index), ctypes.c_char_p(name),
-                                              ctypes.c_char_p(author), ctypes.c_char_p(description))
-                self.sql.adddata(index, name, author, description)
-
+                self.__add()
             elif op == '-d':
-                index = input('序列号:')
-                name = input('书名:')
-                if self.bo is not None:
-                    self.so.deletbook(self.bo, ctypes.c_ulong(index), ctypes.c_char_p(name))
-                self.sql.deletdata(index)
-
+                self.__dele()
             elif op == '-s':
-                name = input('书名:')
-                if self.bo is not None:
-                    self.so.searchbook(self.bo, ctypes.c_char_p(name))
-                else:
-                    res = self.sql.search(name)
-                    sum = 0
-                    for i in res:
-                        for j in i:
-                            if j[4] == 1:
-                                sum += 1
-                    print('作者:', res[0][1], '共:', len(res), '其中', sum, '可以借阅')
-
+                self.__search()
             elif op == '-b':
-                index = input('序列号:')
-                if self.bo is not None:
-                    self.so.loadbook(self.bo, ctypes.c_char_p(name))
-                self.sql.writedata('b', index)
-
+                self.__bow()
             elif op == '-r':
-                index = input('序列号:')
-                if self.bo is not None:
-                    self.so.repay(self.bo, ctypes.c_ulong(index), ctypes.c_char_p(name))
-                self.sql.writedata('r', index)
+                self.__reply()
+
+    def __add(self):
+        index = input('序列号:')
+        name = input('书名:')
+        author = input('作者:')
+        description = input('描述:')
+        self.sql.adddata(index, name, author, description)
+
+    def __dele(self):
+        index = input('序列号:')
+        self.sql.deletdata(index)
+
+    def __search(self):
+        name = input('书名:')
+        res = self.sql.search(name)
+        sum = 0
+        for i in res:
+            for j in i:
+                if j[4] == 1:
+                    sum += 1
+        print('作者:', res[0][1], '共:', len(res), '其中', sum, '可以借阅')
+
+    def __bow(self):
+        index = input('序列号:')
+        self.sql.writedata('b', index)
+
+    def __reply(self):
+        index = input('序列号:')
+        self.sql.writedata('r', index)
 
 
 class Sql:
@@ -129,43 +140,13 @@ class Sql:
 
     def adddata(self, index, name, author, description):
         with self.connect.cursor() as cu:
-            try:
-                cu.execute(self.sql_insert.format(index, name, author, description, '1'))
-                self.connect.commit()
-            except pymysql.err.OperationalError as e:
-                print(e)
+            cu.execute(self.sql_insert.format(index, name, author, description, '1'))
+            self.connect.commit()
 
     def __del__(self):
         self.connect.close()
 
 
-class Synchronization(threading.Thread):
-    """using to update the original data that was stored in linked list"""
-    def __init__(self, origin_data, sql_data):
-        super(Synchronization, self).__init__()
-        self.origin = origin_data
-        self.sql = sql_data
-        global lock
-
-    def run(self):
-        # wait a moment
-        pass
-
-    def __del__(self):
-        super(Synchronization, self).__del__()
-
-
 if __name__ == '__main__':
-
-    Book._fields_ = [
-        ('index', ctypes.c_ulong),
-        ('prior', ctypes.POINTER(Book)),
-        ('next', ctypes.POINTER(Book)),
-        ('name', ctypes.c_char_p),
-        ('author', ctypes.c_char_p),
-        ('flag', ctypes.c_int),
-        ('description', ctypes.c_char_p)
-    ]
-
     m = Main()
     m.main()
