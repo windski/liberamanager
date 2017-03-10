@@ -60,6 +60,8 @@ void searchbook(booktype *head){
     booktype *h = head->next;
     char bookauthor[MAXNAME];
     char bookdescrip[MAXLEN];
+    memset(bookauthor, 0, sizeof(bookauthor));
+    memset(bookdescrip, 0, sizeof(bookdescrip));
     int ablebook = 0, stroge = 0;
     while(h){
         if(strcmp(h->name, bookname) == 0){
