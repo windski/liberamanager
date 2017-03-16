@@ -50,7 +50,7 @@ class Main:
                 elif i is 'b':
                     self.__bow()
                 elif i is 'r':
-                    self.__replt()
+                    self.__reply()
         for op, values in opts:
             if op == '-h':
                 print(self.help)
