@@ -1,6 +1,6 @@
 #include<stdio.h>
 #include<stdlib.h>
-#include"book.h"            // <- 这个头文件是我自己写的
+#include"book.h"
 #include<string.h>
 
 // 声明两个函数
