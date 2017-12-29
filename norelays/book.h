@@ -2,21 +2,40 @@
 #define BOOK_H
 
 #ifndef MAXNAME
-#define MAXNAME 50
+#define MAXNAME 64
 #endif
 
 #ifndef MAXLEN
-#define MAXLEN 200
+#define MAXLEN 513
+#endif
+
+#include <unistd.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <stdbool.h>
+
+#define bzero(buff) memset(buff, 0, sizeof(buff))
+#if defined (_WIN32)
+#define FFLUSH() fflush(stdin)
+#elif defined (__linux__)
+#define FFLUSH()                                            \
+    do {                                                    \
+        char ch;                                            \
+        while((ch = getchar()) != '\n' && ch != EOF);       \
+    } while(0)
+#else
+#define FFLUSH()
 #endif
 
 typedef struct booktype{
     unsigned long index;
-    struct booktype *prior;   //建立双向列表必备=_=
+    struct booktype *prior;
     struct booktype *next;
-    char name[MAXNAME];    //图书的书名
-    char author[MAXNAME];    //图书的作者
-    int flag;     //图书被借出时,flag = 0
-    char description[MAXLEN];  //此书的描述
+    char name[MAXNAME];
+    char author[MAXNAME];
+    int flag;
+    char description[MAXLEN];
 }booktype;
 
 typedef struct{
@@ -27,10 +46,10 @@ typedef struct{
     char des[MAXLEN];
 }mem;
 
-int deletbook(booktype *);   //去除已经废弃不用的书
-booktype *creatdata(int , booktype *);    //初始化时录入图书数据,而且肩负新增图书的任务
-void searchbook(booktype *);    //检索图书
-int loadbook(booktype *);    //借出图书
-int repay(booktype *);    //还书
+extern int deletbook(booktype *);
+extern booktype *creatdata(int , booktype *);
+extern void searchbook(booktype *);
+extern int loadbook(booktype *);
+extern int repay(booktype *);
 
 #endif

@@ -1,6 +1,3 @@
-#include<stdio.h>
-#include<stdlib.h>
-#include<string.h>
 #include"book.h"
 
 booktype *creatdata(int flag, booktype *head){
@@ -15,7 +12,7 @@ booktype *creatdata(int flag, booktype *head){
         while(x != 0){
             booktype *s = (booktype *)malloc(sizeof(booktype));
             s->index = x;
-            while((ch=getchar())!='\n' && ch!=EOF);
+            FFLUSH();
             printf("请输入书的名字\n");
             fgets(s->name, MAXNAME, stdin);
             s->flag = 1;
@@ -38,7 +35,7 @@ booktype *creatdata(int flag, booktype *head){
         booktype *s = (booktype *)malloc(sizeof(booktype));
         s->index = x;
         s->flag = 1;
-        while((ch=getchar())!='\n' && ch!=EOF);
+        FFLUSH();
         printf("请输入书的名字\n");
         fgets(s->name, MAXNAME, stdin);
         printf("请输入书的作者\n");
@@ -87,15 +84,15 @@ int loadbook(booktype *head){
     booktype *h = head->next;
     while(h){
         if(strcmp(h->name, bookname) == 0 && h->flag == 1){
-            h->flag = 0;  //借出此书时将flag修改为0,表示借出
+            h->flag = 0;
             printf("SUCCESS!\n");
             printf("你所借的书的序列号为:%lu, 还书时请提供...\n", h->index);
-            return 0;   //借出成功返回0
+            return 0;
         }
         h = h->next;
     }
     printf("ERROR!\n");
-    return -1;   //没有此书或借出失败
+    return -1;
 }
 
 int repay(booktype *head){
