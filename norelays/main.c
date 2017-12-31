@@ -1,20 +1,21 @@
 #include "book.h"
 #include "utils.h"
 
-int main(int argc, const char **argv)
-{
-    int flags, opt;
+#include <getopt.h>
 
-/*     while((opt = getopt(argc, argv, "u:p")) != -1) {
+int main(int argc, char **argv)
+{
+/*     int opt;
+ *     while((opt = getopt(argc, argv, "u:a:d:p")) != -1) {
  *         switch(opt) {
  *             case 'u':
  *
+ *                 break;
  *         }
  *     } */
 
     char str[MAXLEN];
-    int i;
-    booktype *bookdata = NULL;
+    book_t *bookdata = NULL;
     FILE *fp = fopen("initcache.dat", "rb");
 
     if(fp == NULL) {
@@ -22,7 +23,7 @@ int main(int argc, const char **argv)
         bookdata = creatdata(1, bookdata);
 
         printf("使用方法\n");
-        printf("   a 新增图书\n   d 删除已经废弃不用的图书\n   s 搜索图书的信息\n   b 借书\n   r 还书   q 退出\n\n");
+        printf("   a 新增图书\n   d 删除已经废弃不用的图书\n   s 搜索图书的信息\n   b 借书\n   r 还书\n   p 打印\n q 退出\n\n");
 
         fp = fopen("initcache.dat", "wb");
         set_user(fp);
@@ -44,6 +45,7 @@ int main(int argc, const char **argv)
         fclose(fp);
         bookdata = read_data();
     }
+
     while(true) {
         printf("(libmanager) >> ");
         scanf("%s", str);
@@ -60,11 +62,13 @@ int main(int argc, const char **argv)
             repay(bookdata);
         } else if(strcmp(str, "s") == 0) {
             searchbook(bookdata);
+        } else if(strcmp(str, "p") == 0) {
+            print_book(bookdata);
         } else if(strcmp(str, "q") == 0) {
-            wirte_data(bookdata);
+            write_data(bookdata);
             break;
         } else {
-            printf("   a 新增图书\n   d 删除已经废弃不用的图书\n   s 搜索图书的信息\n   b 借书\n   r 还书   q 退出\n\n");
+            printf("   a 新增图书\n   d 删除已经废弃不用的图书\n   s 搜索图书的信息\n   b 借书\n   r 还书\n   p 打印\n q 退出\n\n");
         }
     }
     return 0;

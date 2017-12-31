@@ -1,65 +1,88 @@
 #include "utils.h"
 
-void wirte_data(booktype *book)
+
+#define GET_PASSWD(target)                     \
+    do {                                       \
+        char ch;                               \
+        int i = 0;                             \
+        while((ch = getch()) != '\n') {        \
+            if(ch != '\b') {                   \
+                (target)[i] = ch;              \
+                i++;                           \
+            } else {                           \
+                i--;                           \
+            }                                  \
+        }                                      \
+        (target)[i] = '\n';                    \
+    } while(0)
+
+
+void write_data(book_t *book)
 {
     FILE *fp = fopen("bookdatacache.dat", "w");
-    if(fp == NULL)
-    {
-        printf("数据存储失败...\n");
+    
+    if(fp == NULL) {
+        printf("[ WARN ]数据存储失败...\n");
         FILE *in = fopen("initcache.dat", "wb");
-        if(in == NULL)
-        {
+
+        if(in == NULL) {
             return ;
-        }
-        else
-        {
+        } else {
             fwrite("0", sizeof(char), 1, in);
             fclose(in);
             return ;
         }
     }
-    booktype *temp;
+    
+    book_t *temp;
     temp = book->next;
     mem m;
-    while(temp)
-    {
+    
+    while(temp) {
         m.i = temp->index;
         strcpy(m.name, temp->name);
         strcpy(m.author, temp->author);
+        
         m.f = temp->flag;
         strcpy(m.des, temp->description);
         fwrite(&m, sizeof(mem), 1, fp);
+        
         temp = temp->next;
     }
     fclose(fp);
 }
 
 
-booktype *read_data(void)
+book_t *read_data(void)
 {
     FILE *fp = fopen("bookdatacache.dat", "rb");
-    if(fp == NULL)
-    {
-        printf("数据已损坏..将重新建立数据\n");
-        booktype *t;
+    if(fp == NULL) {
+        printf("[ ERROR ] 数据已损坏..将重新建立数据\n");
+        book_t *t = NULL;
+        
         return creatdata(1, t);
     }
     mem m;
-    booktype *head = (booktype *)malloc(sizeof(booktype));
-    booktype *rear = head;
-    while(fread(&m, sizeof(mem), 1, fp) == 1)
-    {
-        booktype *s = (booktype *)malloc(sizeof(booktype));
+    book_t *head = (book_t *)malloc(sizeof(book_t));
+    book_t *rear = head;
+    
+    while(fread(&m, sizeof(mem), 1, fp) == 1) {
+        book_t *s = (book_t *)malloc(sizeof(book_t));
+        
         s->index = m.i;
         s->flag =m.f;
+        
         strcpy(s->name, m.name);
         strcpy(s->author, m.author);
         strcpy(s->description, m.des);
+        
         s->prior = rear;
         s->next = rear->next;
         rear->next = s;
         rear = s;
     }
+
+    fclose(fp);
     return head;
 }
 
@@ -95,17 +118,21 @@ int set_user(FILE *fp)
     bzero(target);
 
     FFLUSH();
-    printf("用户名:");
+    printf("用户名: ");
     fgets(buff, sizeof(buff), stdin);
     fwrite(buff, sizeof(buff), 1, fp);
     bzero(buff);
 
-    printf("密码:");
-    fgets(buff, sizeof(buff), stdin);
+    printf("密码: ");
+
+    GET_PASSWD(buff);
+
     if(encryption(target, buff) == 1) {
-        fprintf(stderr, "WARNNING! The password was NOT Encrypt yet!\n");
+        fprintf(stderr, "\n[ WARN ] WARNNING! The password was NOT Encrypt yet!\n");
     }
     fwrite(target, sizeof(target), 1, fp);
+
+    printf("\n");
 
     return 0;
 }
@@ -119,9 +146,8 @@ int checkout_user(FILE *fp)
 
     bool flag_user = false;
 
-    printf("Login First..\n\n用户名:");
+    printf("[ INFO ] Login First..\n\n用户名:");
 
-    FFLUSH();
     fgets(target, sizeof(target), stdin);
     fread(buff, sizeof(buff), 1, fp);
     
@@ -135,27 +161,26 @@ int checkout_user(FILE *fp)
     }
 
     if(flag_user) {
-        char ch;
-        int i = 0;
         printf("Password:");
         bzero(buff);
-        while((ch = getch()) != '\n') {
-            buff[i] = ch;
-            i++;
-        }
-        buff[i - 1] = '\0';
+
+        GET_PASSWD(buff);
+
         bzero(target);
 
         encryption(target, buff);
         fread(buff, sizeof(buff), 1, fp);
 
         if(strcmp(target, buff) == 0) {
+            printf("\n");
             return 0;
         }
+
+        fprintf(stderr, "\n[ ERROR ] The pasword was wrong!\n");
+        return 1;
     }
 
-    fprintf(stderr, "Can't find the user name.\n");
-
+    fprintf(stderr, "\n[ ERROR ] Can't find the user name.\n");
     return 1;
 }
 
@@ -186,4 +211,5 @@ int _getch(void)
 
     return c;
 }
+
 

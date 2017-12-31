@@ -14,8 +14,11 @@
 #include <stdlib.h>
 #include <string.h>
 #include <stdbool.h>
+#include <signal.h>
 
 #define bzero(buff) memset(buff, 0, sizeof(buff))
+
+
 #if defined (_WIN32)
 #define FFLUSH() fflush(stdin)
 #elif defined (__linux__)
@@ -28,28 +31,34 @@
 #define FFLUSH()
 #endif
 
-typedef struct booktype{
+
+struct book_t {
     unsigned long index;
-    struct booktype *prior;
-    struct booktype *next;
+    struct book_t *prior;
+    struct book_t *next;
     char name[MAXNAME];
     char author[MAXNAME];
-    int flag;
+    bool flag;
     char description[MAXLEN];
-}booktype;
+};
 
-typedef struct{
+typedef struct book_t book_t;
+
+typedef struct {
     unsigned long i;
     char name[MAXNAME];
     char author[MAXNAME];
     int f;
     char des[MAXLEN];
-}mem;
+} mem;
 
-extern int deletbook(booktype *);
-extern booktype *creatdata(int , booktype *);
-extern void searchbook(booktype *);
-extern int loadbook(booktype *);
-extern int repay(booktype *);
+extern int core();
+
+extern int deletbook(book_t *);
+extern book_t *creatdata(bool, book_t *);
+extern void searchbook(book_t *);
+extern int loadbook(book_t *);
+extern int repay(book_t *);
+extern int print_book(book_t *);
 
 #endif

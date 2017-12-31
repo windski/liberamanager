@@ -9,8 +9,16 @@
 #define getch _getch
 #endif
 
-extern void wirte_data(booktype *);
-extern booktype *read_data(void);
+
+#define rm_enter_ch(source)                  \
+    do {                                     \
+        size_t len = strlen(source);         \
+        if((source)[len - 1] == '\n')        \
+            (source)[len - 1] = '\0';        \
+    } while(0)
+
+extern void write_data(book_t *);
+extern book_t *read_data(void);
 extern int encryption(char *, const char *);
 extern int set_user(FILE *);
 extern int checkout_user(FILE *);
