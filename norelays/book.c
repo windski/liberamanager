@@ -31,6 +31,7 @@ int core()
     return 0;
 }
 
+// TODO: 去重
 
 book_t *creatdata(bool flag, book_t *head)
 {

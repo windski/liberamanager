@@ -1,18 +1,48 @@
 #include "book.h"
 #include "utils.h"
-
 #include <getopt.h>
 
-int main(int argc, char **argv)
+void print_help(char *name)
 {
-/*     int opt;
- *     while((opt = getopt(argc, argv, "u:a:d:p")) != -1) {
- *         switch(opt) {
- *             case 'u':
- *
- *                 break;
- *         }
- *     } */
+    printf("\nUsage:\n %s <option> <parameters>\n\nParse command options\n\n"
+            "Options:\n"
+            " -a, Add a book.<Index>\n"
+            " -u, Specified username\n"
+            " -d, Delete the book\n"
+            " -p, Advanced function\n"
+            " -h, print this page\n", name);
+    exit(0);
+}
+
+int main(int argc, char *argv[])
+{
+    // TODO: Advanced function.
+    // TODO: Parse command. sql-like language..
+    int opt;
+    while((opt = getopt(argc, argv, "u:a:d:ph")) != -1) {
+        switch(opt) {
+            case 'u':
+                if(login_user(optarg) != 0) {
+                    exit(-1);
+                }
+                goto start;
+            case 'a':
+
+                break;
+            case 'd':
+
+                break;
+            case 'p':
+
+                break;
+            case 'h':
+
+                break;
+            default:
+                print_help(argv[0]);
+                break;
+        }
+    }
 
     char str[MAXLEN];
     book_t *bookdata = NULL;
@@ -43,6 +73,7 @@ int main(int argc, char **argv)
         }
 
         fclose(fp);
+start:
         bookdata = read_data();
     }
 

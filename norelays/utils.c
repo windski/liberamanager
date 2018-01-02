@@ -120,6 +120,7 @@ int set_user(FILE *fp)
     FFLUSH();
     printf("用户名: ");
     fgets(buff, sizeof(buff), stdin);
+    rm_enter_ch(buff);
     fwrite(buff, sizeof(buff), 1, fp);
     bzero(buff);
 
@@ -149,6 +150,7 @@ int checkout_user(FILE *fp)
     printf("[ INFO ] Login First..\n\n用户名:");
 
     fgets(target, sizeof(target), stdin);
+    rm_enter_ch(target);
     fread(buff, sizeof(buff), 1, fp);
     
     while(feof(fp) == 0) {
@@ -212,4 +214,55 @@ int _getch(void)
     return c;
 }
 
+
+int login_user(char *username)
+{
+    FILE *fp = fopen("initcache.dat", "rb");
+    if(fp == NULL) {
+        fprintf(stderr, "Oops! The user infomations was NOT Found!\n");
+        FILE *fp = fopen("initcache.dat", "wb");
+        assert(fp != NULL);
+        return set_user(fp);
+    }
+
+    char buff[MAXLEN], target[MAXLEN];
+    bool flag_user = false;
+    bzero(buff);
+    bzero(target);
+
+    // 跟上面的实现有部分一样...在后期重构的时候再说吧..
+    fread(buff, sizeof(buff), 1, fp);
+    strncpy(target, username, sizeof(target));
+    while(feof(fp) == 0) {
+        if(strcmp(target, buff) == 0) {
+            flag_user = true;
+            break;
+        }
+        bzero(buff);
+        fread(buff, sizeof(buff), 1, fp);
+    }
+
+    if(flag_user) {
+        bzero(target);
+        bzero(buff);
+
+        printf("Password: ");
+        GET_PASSWD(buff);
+        encryption(target, buff);
+
+        fread(buff, sizeof(buff), 1, fp);
+        fclose(fp);
+        if(strcmp(buff, target) == 0) {
+            printf("\n");
+            return 0;
+        }
+
+        fprintf(stderr, "[ ERROR ] Password was wrong!\n");
+        return -1;
+    }
+
+    printf("[ INFO ] Can NOT Find the user name\n");
+    fclose(fp);
+    return -1;
+}
 

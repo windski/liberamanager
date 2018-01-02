@@ -22,7 +22,7 @@ extern book_t *read_data(void);
 extern int encryption(char *, const char *);
 extern int set_user(FILE *);
 extern int checkout_user(FILE *);
-
+extern int login_user(char *);
 extern int _getch(void);
 
 #endif

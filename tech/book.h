@@ -3,7 +3,7 @@
 
 #define MAXNAME 50
 
-#define MAXARRAY 4096
+#define MAXARRAY 1024
 
 #define MAXLEN 200
 

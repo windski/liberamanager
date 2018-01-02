@@ -16,6 +16,8 @@
 #include <stdbool.h>
 #include <signal.h>
 
+#include <assert.h>
+
 #define bzero(buff) memset(buff, 0, sizeof(buff))
 
 
@@ -33,7 +35,7 @@
 
 
 struct book_t {
-    unsigned long index;
+    size_t index;
     struct book_t *prior;
     struct book_t *next;
     char name[MAXNAME];
