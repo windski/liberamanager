@@ -5,7 +5,7 @@
     do {                                       \
         char ch;                               \
         int i = 0;                             \
-        while((ch = getch()) != '\n') {        \
+        while((ch = getch()) != ENTER) {       \
             if(ch != '\b') {                   \
                 (target)[i] = ch;              \
                 i++;                           \
@@ -186,7 +186,7 @@ int checkout_user(FILE *fp)
     return 1;
 }
 
-
+#if defined(__linux__)
 int _getch(void)
 {
     struct termios tm, tm_old;
@@ -213,7 +213,7 @@ int _getch(void)
 
     return c;
 }
-
+#endif
 
 int login_user(char *username)
 {

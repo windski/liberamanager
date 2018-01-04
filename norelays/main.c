@@ -36,7 +36,7 @@ int main(int argc, char *argv[])
 
                 break;
             case 'h':
-
+                print_help(argv[0]);
                 break;
             default:
                 print_help(argv[0]);
@@ -53,20 +53,12 @@ int main(int argc, char *argv[])
         bookdata = creatdata(1, bookdata);
 
         printf("使用方法\n");
-        printf("   a 新增图书\n   d 删除已经废弃不用的图书\n   s 搜索图书的信息\n   b 借书\n   r 还书\n   p 打印\n q 退出\n\n");
+        printf("\ta 新增图书\n\td 删除已经废弃不用的图书\n\ts 搜索图书的信息\n\tb 借书\n\tr 还书\n\tp 打印\n\tc 统计\n\tsort 排序\nq 退出\n\n");
 
         fp = fopen("initcache.dat", "wb");
         set_user(fp);
         fclose(fp);
     } else {
-/*         fread(&i, sizeof(int), 1, fp);
- *         fclose(fp);
- *
- *         if(i == 0) {
- *             printf("数据损坏,请重新建立\n");
- *             bookdata = creatdata(1, bookdata);
- *         } */
-
         if(checkout_user(fp) != 0) {
             fclose(fp);
             exit(-1);
@@ -95,11 +87,15 @@ start:
             searchbook(bookdata);
         } else if(strcmp(str, "p") == 0) {
             print_book(bookdata);
+        } else if(strcmp(str, "c") == 0) {
+            count_book(bookdata);
+        } else if(strcmp(str, "sort") == 0) {
+            sort_book(bookdata);
         } else if(strcmp(str, "q") == 0) {
             write_data(bookdata);
             break;
         } else {
-            printf("   a 新增图书\n   d 删除已经废弃不用的图书\n   s 搜索图书的信息\n   b 借书\n   r 还书\n   p 打印\n q 退出\n\n");
+            printf("\ta 新增图书\n\td 删除已经废弃不用的图书\n\ts 搜索图书的信息\n\tb 借书\n\tr 还书\n\tp 打印\n\tc 统计\n\tsort 排序\nq 退出\n\n");
         }
     }
     return 0;

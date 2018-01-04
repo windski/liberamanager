@@ -20,17 +20,21 @@
 
 #define bzero(buff) memset(buff, 0, sizeof(buff))
 
-
 #if defined (_WIN32)
-#define FFLUSH() fflush(stdin)
+# define FFLUSH() fflush(stdin)
+# define ENTER '\r'
+
 #elif defined (__linux__)
-#define FFLUSH()                                            \
+# define ENTER '\n'
+# define FFLUSH()                                           \
     do {                                                    \
         char ch;                                            \
         while((ch = getchar()) != '\n' && ch != EOF);       \
     } while(0)
+
 #else
-#define FFLUSH()
+# define FFLUSH()
+
 #endif
 
 
@@ -54,13 +58,13 @@ typedef struct {
     char des[MAXLEN];
 } mem;
 
-extern int core();
-
+extern int count_book(book_t *);
 extern int deletbook(book_t *);
 extern book_t *creatdata(bool, book_t *);
 extern void searchbook(book_t *);
 extern int loadbook(book_t *);
 extern int repay(book_t *);
 extern int print_book(book_t *);
+extern int sort_book(book_t *);
 
 #endif

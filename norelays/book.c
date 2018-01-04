@@ -1,40 +1,47 @@
 #include "book.h"
 #include "utils.h"
 
+static int SUM;
+
 #define __TMP_MAX_DES 64
 #define __TMP_MAX_LEN 24
 
-#define PRINT_TABLE_LINE(len)                     \
-    do {                                          \
-        int lens[5] = {7, 26, 26, 66, 6};         \
-        int len_i = 0;                            \
-        for(int i = 0; i < (len); i++) {          \
-            printf("+");                          \
-            int j = 0;                            \
-            for( ; j < lens[len_i]; j++) {        \
-                printf("-");                      \
-            }                                     \
-            len_i++;                              \
-            i = j;                                \
-            if(len_i == 5) {                      \
-                printf("+");                      \
-                break;                            \
-            }                                     \
-        }                                         \
-        printf("\n");                             \
+#define PRINT_TABLE_LINE(len)                                   \
+    do {                                                        \
+        int lens[5] = {7, 26, 26, 66, 6};                       \
+        int len_i = 0;                                          \
+        for(int i = 0; i < (len); i++) {                        \
+            printf("+");                                        \
+            int j = 0;                                          \
+            for( ; j < lens[len_i]; j++) {                      \
+                printf("-");                                    \
+            }                                                   \
+            len_i++;                                            \
+            i = j;                                              \
+            if(len_i == 5) {                                    \
+                printf("+");                                    \
+                break;                                          \
+            }                                                   \
+        }                                                       \
+        printf("\n");                                           \
     } while(0)
 
 
-int core()
-{
+#define SWAP_ITEM(target)                                       \
+    do {                                                        \
+        char buff[MAXLEN];                                      \
+        bzero(buff);                                            \
+        strncpy(buff, l->target, sizeof(l->target));            \
+        strncpy(l->target, r->target, sizeof(l->target));       \
+        strncpy(r->target, buff, sizeof(r->target));            \
+    } while(0)
 
-    return 0;
-}
 
 // TODO: 去重
 
 book_t *creatdata(bool flag, book_t *head)
 {
+    int i = 0;
     if(flag == true) {
         unsigned long x;
         book_t *head = (book_t *)malloc(sizeof(book_t));
@@ -67,11 +74,13 @@ book_t *creatdata(bool flag, book_t *head)
             s->next = rear->next;
             rear->next = s;
             rear = s;
+            i++;
 
             printf("Index: ");
             scanf("%lu", &x);
         }
 
+        SUM = i;
         return head;
     } else {
         unsigned long x;
@@ -100,6 +109,7 @@ book_t *creatdata(bool flag, book_t *head)
         s->prior = head;
         head->next = s;
 
+        SUM++;
         return head;
     }
 }
@@ -110,6 +120,7 @@ void searchbook(book_t *head)
     bzero(bookname);
     printf("Whitch book you wanna search: ");
     fgets(bookname, MAXNAME, stdin);
+    rm_enter_ch(bookname);
 
     book_t *h = head->next;
 
@@ -169,11 +180,13 @@ int repay(book_t *head)
 {
     unsigned long i;
     char bookname[MAXNAME];
+    bool flag = false;
     bzero(bookname);
 
     printf("请输入你要还书的书名:");
     fgets(bookname, MAXNAME, stdin);
     rm_enter_ch(bookname);
+
     printf("请提供你要还书的序列号:");
     scanf("%lu", &i);
 
@@ -185,12 +198,14 @@ int repay(book_t *head)
                 printf("SUCCESS!\n");
                 return 0;
             } else {
-                printf("ERROR!\n\n此书未被借出,还书失败\n");
+                flag = true;
             }
         }
         h = h->next;
     }
-    printf("ERROR!\n");
+
+    if(flag)
+        printf("[ ERROR ] 这本书并没有被借出!\n");
     return -1;
 }
 
@@ -214,6 +229,7 @@ int deletbook(book_t *head)
             h->next->prior = h->prior;
 
             free(h);
+            SUM--;
 
             return 0;
         }
@@ -231,7 +247,8 @@ int print_book(book_t *head)
     bzero(buff);
     printf("[ INFO ] T 代表未被借出, F 代表已借出\n");
 
-    sprintf(buff, "| %-s | %-24s | %-24s | %-64s | flag |", "Index", "Name", "Author", "Description");
+    sprintf(buff, "| %-s | %-24s | %-24s | %-64s | flag |",
+            "Index", "Name", "Author", "Description");
     int len = strlen(buff);
 
     PRINT_TABLE_LINE(len);
@@ -240,12 +257,14 @@ int print_book(book_t *head)
 
     while(tmp) {
         bzero(buff);
-        char buf_des[__TMP_MAX_DES], buf_nam[__TMP_MAX_LEN], buf_aut[__TMP_MAX_LEN];
-        
+        char buf_des[__TMP_MAX_DES],
+            buf_nam[__TMP_MAX_LEN],
+            buf_aut[__TMP_MAX_LEN];
+
         bzero(buf_nam);
         bzero(buf_aut);
         bzero(buf_des);
-        
+
         strncpy(buf_des, tmp->description, sizeof(buf_des));
         strncpy(buf_aut, tmp->author, sizeof(buf_aut));
         strncpy(buf_nam, tmp->name, sizeof(buf_nam));
@@ -277,4 +296,43 @@ int print_book(book_t *head)
 #undef __TMP_MAX_DES
 #undef __TMP_MAX_LEN
 
+static void swap_book(book_t *l, book_t *r)
+{
+    int tmp_;
+    tmp_ = l->index;
+    l->index = r->index;
+    r->index = tmp_;
+
+    tmp_ = l->flag;
+    l->flag = r->flag;
+    r->flag = tmp_;
+
+    SWAP_ITEM(name);
+    SWAP_ITEM(author);
+    SWAP_ITEM(description);
+}
+
+
+int sort_book(book_t *root)
+{
+    book_t *head = root;
+    book_t *p, *p1;
+    for(book_t *tmp = head;
+            tmp->next != NULL;
+            tmp = tmp->next) {
+
+        for(book_t *ttmp = tmp;
+                ttmp->next != NULL;
+                ttmp = ttmp->next) {
+
+            p = ttmp;
+            p1 = ttmp->next;
+            if(p->index > p1->index) {
+                swap_book(p, p1);
+            }
+        }
+    }
+
+    return 0;
+}
 
