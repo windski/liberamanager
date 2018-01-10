@@ -87,8 +87,6 @@ start:
             searchbook(bookdata);
         } else if(strcmp(str, "p") == 0) {
             print_book(bookdata);
-        } else if(strcmp(str, "c") == 0) {
-            count_book(bookdata);
         } else if(strcmp(str, "sort") == 0) {
             sort_book(bookdata);
         } else if(strcmp(str, "q") == 0) {

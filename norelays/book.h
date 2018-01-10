@@ -58,7 +58,6 @@ typedef struct {
     char des[MAXLEN];
 } mem;
 
-extern int count_book(book_t *);
 extern int deletbook(book_t *);
 extern book_t *creatdata(bool, book_t *);
 extern void searchbook(book_t *);
